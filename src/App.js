@@ -2,30 +2,38 @@ import React, { useState } from "react";
 import styles from "./App.module.css";
 
 const App = () => {
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
-  const [grade, setGrade] = useState("");
-  const [subject, setSubject] = useState("");
   const [students, setStudents] = useState([]);
+  const [formData, setFormData] = useState({
+    name: '',
+    age: '',
+    grade: '',
+    subject: ''
+  });
   const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!name || !age || !grade || !subject) {
+    if (!formData.name || !formData.age || !formData.grade || !formData.subject) {
       setError("Please fill all input fields");
       return;
     }
-    const student = {
-      name: name,
-      age: age,
-      grade: grade,
-      subject: subject
-    };
-    setStudents([...students, student]);
-    setName("");
-    setAge("");
-    setGrade("");
-    setSubject("");
+    console.log(formData)
+
+    setStudents([...students, formData]);
+
+    setFormData({
+      name: '',
+      age: '',
+      grade: '',
+      subject: ''
+    });
+    setError("");
+  };
+
+  const handleInputChange = (e) => {
+    console.log(formData,'before');
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    console.log(formData,'after');
   };
 
   return (
@@ -37,8 +45,9 @@ const App = () => {
           <label className={styles.label}>Name:</label>
           <input
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
             className={styles.input}
           />
         </div>
@@ -46,8 +55,9 @@ const App = () => {
           <label className={styles.label}>Age:</label>
           <input
             type="text"
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
+            name="age"
+            value={formData.age}
+            onChange={handleInputChange}
             className={styles.input}
           />
         </div>
@@ -55,8 +65,9 @@ const App = () => {
           <label className={styles.label}>Grade:</label>
           <input
             type="text"
-            value={grade}
-            onChange={(e) => setGrade(e.target.value)}
+            name="grade"
+            value={formData.grade}
+            onChange={handleInputChange}
             className={styles.input}
           />
         </div>
@@ -64,8 +75,9 @@ const App = () => {
           <label className={styles.label}>Subject:</label>
           <input
             type="text"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
+            name="subject"
+            value={formData.subject}
+            onChange={handleInputChange}
             className={styles.input}
           />
         </div>
