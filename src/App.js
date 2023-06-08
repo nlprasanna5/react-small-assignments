@@ -1,116 +1,162 @@
-import React, { useState } from "react";
-import styles from "./App.module.css";
+import React, { useState, useReducer } from 'react';
+import styles from './App.module.css';
 
-const App = () => {
-  const [students, setStudents] = useState([]);
-  const [formData, setFormData] = useState({
-    name: '',
-    age: '',
-    grade: '',
-    subject: ''
-  });
-  const [error, setError] = useState("");
+const initialState = {
+  todos: [],
+}
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!formData.name || !formData.age || !formData.grade || !formData.subject) {
-      setError("Please fill all input fields");
-      return;
+function reducer(state, action) {
+  switch (action.type) {
+    case 'ADD_TODO':{
+      return {
+        ...state,
+        todos: [...state.todos, action.payload],
+      }
     }
-    console.log(formData)
 
-    setStudents([...students, formData]);
+      case 'UPDATE':{
+        const { id, title } = action.payload;
+        const todoIndex = state.todos.findIndex((todo) => todo.id === id);
+        if (todoIndex !== -1) {
+          const updatedTodos = [...state.todos];
+          updatedTodos[todoIndex].title = title;
+          return {
+            ...state,
+            todos: updatedTodos,
+          };
+        }
+        return state;
+      }
 
-    setFormData({
-      name: '',
-      age: '',
-      grade: '',
-      subject: ''
-    });
-    setError("");
-  };
+      case 'DELETE' : {
+        const { id, } = action.payload;
+        const deletedValues = state.todos.filter((item,index) => {
+            return item.id !== id
+        })
+        return {
+          ...state,
+          todos: deletedValues,
+        }
+      }
 
-  const handleInputChange = (e) => {
-    console.log(formData,'before');
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    console.log(formData,'after');
-  };
+      default:{
+        return state;
+      }
+        
+       
+          
+  }
+
+}
+
+
+
+function App() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const [addInput, setAddInput] = useState('');
+  const [editInput, setEditInput] = useState('');
+  const [editTodoId, setEditTodoId] = useState(null);
+
+  function handleAddSubmit(e) {
+    e.preventDefault();
+    const todo = {
+      id: Date.now().toString(),
+      title: addInput
+    }
+    dispatch(
+      {
+        type: 'ADD_TODO',
+        payload: todo
+      }
+    )
+    setAddInput("")
+  }
+
+  function handleEdit(id,title){
+    setEditTodoId(id);
+    setEditInput(title)
+
+  }
+
+  function handleEditSubmit(e){
+       e.preventDefault();
+       let editValues={
+         id:editTodoId,
+         title: editInput
+       }
+       dispatch(
+        {
+          type:'UPDATE',
+          payload: editValues,
+        }
+       )
+
+       setEditTodoId(null);
+       setEditInput('')
+  }
+
+  function handleDelete(id){
+    let deleteValue={
+      id:id,
+    }
+    dispatch(
+      {
+        type:'DELETE',
+        payload: deleteValue,
+      }
+    )
+  }
 
   return (
-    <div className={styles.container}>
-      <h2 className={styles.title}>Student Form</h2>
-      <p className={styles.error}>{error}</p>
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Name:</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            className={styles.input}
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Age:</label>
-          <input
-            type="text"
-            name="age"
-            value={formData.age}
-            onChange={handleInputChange}
-            className={styles.input}
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Grade:</label>
-          <input
-            type="text"
-            name="grade"
-            value={formData.grade}
-            onChange={handleInputChange}
-            className={styles.input}
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Subject:</label>
-          <input
-            type="text"
-            name="subject"
-            value={formData.subject}
-            onChange={handleInputChange}
-            className={styles.input}
-          />
-        </div>
-
-        <button type="submit" className={styles.button}>
-          Submit
-        </button>
+    <div className={styles.taskWrapper}>
+      <h1 className={styles.taskHeader}>Todo App</h1>
+      <form onSubmit={handleAddSubmit} className={styles.taskForm}>
+        <input
+          type='text'
+          placeholder='Enter todo'
+          value={addInput}
+          onChange={(e) => setAddInput(e.target.value)}
+          className={styles.taskInput}
+        />
+        <button type='submit' className={styles.taskButton} >Add</button>
       </form>
+      <ul className={styles.taskList}>
+        {
+          state.todos.map((item, index) => (
+            <li key={item.id} className={styles.taskListItem}>
+              {
+                editTodoId === item.id ? (
+                  <form onSubmit={handleEditSubmit}>
+                    <input
+                      type='text'
+                      value={editInput}
+                      onChange={(e) => setEditInput(e.target.value)}
+                      className={styles.taskInput}
+                    />
+                    <button type='submit' className={styles.taskSave}>Save</button>
+                  </form>
+                ) : (
+                  <>
+                  <span className={styles.taskText}> {item.title}</span> 
+                    <button 
+                    onClick={() => handleEdit(item.id, item.title)}
+                    className={styles.taskButtonSmall}
+                    >Edit</button>
+                  </>
+                )
 
-      {students.length > 0 && (
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Age</th>
-              <th>Grade</th>
-              <th>Subject</th>
-            </tr>
-          </thead>
-          <tbody>
-            {students.map((student, index) => (
-              <tr key={index}>
-                <td>{student.name}</td>
-                <td>{student.age}</td>
-                <td>{student.grade}</td>
-                <td>{student.subject}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+              }
+              <button 
+              onClick={()=> handleDelete(item.id)}
+              className={styles.taskButtonSmall}
+              >Delete</button>
+            
+            </li>
+          ))
+        }
+      </ul>
     </div>
-  );
-};
+  )
+}
 
 export default App;
