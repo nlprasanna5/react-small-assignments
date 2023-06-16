@@ -1,0 +1,101 @@
+/* Weather.module.css */
+
+.weatherApp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+  }
+  
+  h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .inputField {
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 300px;
+    font-size: 16px;
+  }
+  
+  .submitButton {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .weatherInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    color: #333;
+    max-width: 400px;
+    width: 90%;
+  }
+  
+  .weatherInfo h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+  
+  .detailsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .weatherIcon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .weatherIcon img {
+    width: 100px;
+  }
+  
+  .weatherIcon p {
+    font-size: 20px;
+    margin: 0;
+  }
+  
+  .temperature {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 20px;
+  }
+  
+  .additionalInfo {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+    font-size: 20px;
+  }
+  
+  .additionalInfo p {
+    margin: 0;
+  }
+  
